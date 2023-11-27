@@ -8,12 +8,25 @@ let package = Package(
         .library(
             name: "fishhook",
             targets: ["fishhook"]
+        ),
+        .library(
+            name: "fishhookC",
+            targets: ["fishhookC"]
         )
     ],
     targets: [
         .target(
             name: "fishhook",
+            dependencies: [
+                "fishhookC"
+            ]
+        ),
+        .target(
+            name: "fishhookC",
             path: "./",
+            exclude: [
+                "Sources/"
+            ],
             publicHeadersPath: "include/",
             cSettings: [
                 .define("FISHHOOK_EXPORT")
