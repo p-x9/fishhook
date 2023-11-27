@@ -14,7 +14,10 @@ let package = Package(
         .target(
             name: "fishhook",
             path: "./",
-            publicHeadersPath: "include/"
+            publicHeadersPath: "include/",
+            cSettings: [
+                .define("FISHHOOK_EXPORT")
+            ]
         )
     ]
 )
