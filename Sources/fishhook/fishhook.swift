@@ -27,7 +27,8 @@ public class Rebinding {
     }
 }
 
-public func rebindSymbol(_ rebinding: Rebinding) {
+@discardableResult
+public func rebindSymbol(_ rebinding: Rebinding) -> Bool {
     rebindSymbol(
         name: rebinding.name,
         replacement: rebinding.replacement,
@@ -35,11 +36,12 @@ public func rebindSymbol(_ rebinding: Rebinding) {
     )
 }
 
+@discardableResult
 public func rebindSymbol(
     name: String,
     replacement: UnsafeMutableRawPointer,
     replaced: UnsafeMutablePointer<UnsafeMutableRawPointer?>?
-) {
+) -> Bool {
     name.withCString {
         var rebindings = [
             fishhookC.rebinding(
@@ -47,15 +49,16 @@ public func rebindSymbol(
                 replacement: replacement,
                 replaced: replaced)
         ]
-        rebind_symbols(&rebindings, 1)
+        return rebind_symbols(&rebindings, 1) != -1
     }
 }
 
+@discardableResult
 public func rebindSymbolsImage(
     header: UnsafePointer<mach_header>,
     slide: intptr_t,
     rebinding: Rebinding
-) {
+) -> Bool {
     rebindSymbolsImage(
         header: header,
         slide: slide,
@@ -65,13 +68,14 @@ public func rebindSymbolsImage(
     )
 }
 
+@discardableResult
 public func rebindSymbolsImage(
     header: UnsafePointer<mach_header>,
     slide: intptr_t,
     name: String,
     replacement: UnsafeMutableRawPointer,
     replaced: UnsafeMutablePointer<UnsafeMutableRawPointer?>?
-) {
+) -> Bool {
     name.withCString {
         var rebindings = [
             fishhookC.rebinding(
@@ -79,11 +83,11 @@ public func rebindSymbolsImage(
                 replacement: replacement,
                 replaced: replaced)
         ]
-        rebind_symbols_image(
+        return rebind_symbols_image(
             UnsafeMutableRawPointer(mutating: header),
             slide,
             &rebindings,
             1
-        )
+        ) != -1
     }
 }
